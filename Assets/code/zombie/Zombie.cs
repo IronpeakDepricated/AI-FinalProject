@@ -11,6 +11,7 @@ public class Zombie : MonoBehaviour
         if(Node.CanReach(transform.position, Player.player.transform.position))
         {
             transform.position = Vector3.MoveTowards(transform.position, Player.player.transform.position, Time.deltaTime * 10);
+            path = null;
             return;
         }
         else
@@ -26,7 +27,8 @@ public class Zombie : MonoBehaviour
                 float distance = Vector3.Distance(transform.position, Graph.graph.graphNodes[i].transform.position);
                 if(Node.CanReach(transform.position, Graph.graph.graphNodes[i].transform.position) && distance != 0)
                 {
-                    queue.Push(distance, new ZombieState(Graph.graph.graphNodes[i], distance));
+                    ZombieState state = new ZombieState(Graph.graph.graphNodes[i], distance);
+                    queue.Push(state.distance, state);
                 }
             }
             
@@ -41,7 +43,7 @@ public class Zombie : MonoBehaviour
                 ZombieState next = queue.Pop();
                 if(next.node.ReachPlayer)
                 {
-                    Debug.Log(expansions);
+                    //Debug.Log(expansions);
                     path = next;
                     break;
                 }
@@ -50,8 +52,8 @@ public class Zombie : MonoBehaviour
                     if(marked[next.node.adjNodes[i].node.ID] == false)
                     {
                         marked[next.node.adjNodes[i].node.ID] = true;
-                        float distance = next.distance + next.node.adjNodes[i].distance;
-                        queue.Push(distance, new ZombieState(next, next.node.adjNodes[i]));
+                        ZombieState state = new ZombieState(next, next.node.adjNodes[i]);
+                        queue.Push(state.distance, state);
                     }
                 }
             }
