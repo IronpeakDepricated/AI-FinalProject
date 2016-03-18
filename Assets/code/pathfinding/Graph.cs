@@ -10,6 +10,14 @@ public class Graph : MonoBehaviour
     {
         Graph.graph = this;
     }
+
+    void Start()
+    {
+        for(int i = 0; i < graphNodes.Count; i++)
+        {
+            graphNodes[i].ID = i;
+        }
+    }
    
     void Update()
     {

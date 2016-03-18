@@ -7,7 +7,7 @@ public class Node : MonoBehaviour
 
     public bool DrawGizmos = true;
 
-    public uint ID;
+    public int ID;
     public bool ReachPlayer;
     public List<NodeConnection> adjNodes = new List<NodeConnection>();
 
