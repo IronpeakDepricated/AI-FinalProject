@@ -5,8 +5,6 @@ using System;
 public class Node : MonoBehaviour
 {
 
-    public bool DrawGizmos = true;
-
     public int ID;
     public bool ReachPlayer;
     public List<NodeConnection> adjNodes = new List<NodeConnection>();
@@ -47,9 +45,9 @@ public class Node : MonoBehaviour
         return true;
     }
 
-    void OnDrawGizmos()
+    public void OnDrawGizmosSelected()
     {
-        if(Application.isPlaying == false || !DrawGizmos)
+        if(Application.isPlaying == false)
             return;
         Gizmos.color = Color.green;
         for(int i = 0; i < Graph.graph.graphNodes.Count; i++)

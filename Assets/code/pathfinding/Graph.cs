@@ -31,4 +31,14 @@ public class Graph : MonoBehaviour
     {
         return Node.CanReachNode(Player.player.transform.position, node.transform.position);
     }
+
+    public void OnDrawGizmosSelected()
+    {
+        if(Application.isPlaying == false)
+            return;
+        for(int i = 0; i < graphNodes.Count; i++)
+        {
+            graphNodes[i].OnDrawGizmosSelected();
+        }
+    }
 }
