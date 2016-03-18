@@ -4,55 +4,59 @@ using System.Collections.Generic;
 public class Zombie : MonoBehaviour
 {
     public ZombieState path;
-    Queue<ZombieState> states = new Queue<ZombieState>();
 
 	void Update ()
     {
         path = null;
-        if(Node.CanReachNode(transform.position, Player.player.transform.position))
+        if(Node.CanReach(transform.position, Player.player.transform.position))
         {
             transform.position = Vector3.MoveTowards(transform.position, Player.player.transform.position, Time.deltaTime * 10);
-            path = null;
             return;
         }
-        List<bool> marked = new List<bool>(Graph.graph.graphNodes.Count);
-        for(int i = 0; i < Graph.graph.graphNodes.Count; i++)
+        else
         {
-            marked.Add(false);
-        }
-        Queue<ZombieState> available = new Queue<ZombieState>();
-        for(int i = 0; i < Graph.graph.graphNodes.Count; i++)
-        {
-            if(Node.CanReachNode(transform.position, Graph.graph.graphNodes[i].transform.position) && Vector3.Distance(transform.position, Graph.graph.graphNodes[i].transform.position) != 0)
+            List<bool> marked = new List<bool>(Graph.graph.graphNodes.Count);
+            for(int i = 0; i < Graph.graph.graphNodes.Count; i++)
             {
-                available.Enqueue(new ZombieState(Graph.graph.graphNodes[i], Vector3.Distance(transform.position, Graph.graph.graphNodes[i].transform.position)));
+                marked.Add(false);
             }
-        }
-
-        uint count = 0;
-        while(available.Count != 0)
-        {
-            count++;
-            if(count > 10000)
+            PriorityQueue<ZombieState> queue = new PriorityQueue<ZombieState>();
+            for(int i = 0; i < Graph.graph.graphNodes.Count; i++)
             {
-                return;
-            }
-            ZombieState next = available.Dequeue();
-            marked[next.node.ID] = true;
-            if(next.node.ReachPlayer)
-            {
-                Debug.Log(count);
-                path = next;
-                break;
-            }
-            for(int i = 0; i < next.node.adjNodes.Count; i++)
-            {
-                if(marked[next.node.ID] == false)
+                float distance = Vector3.Distance(transform.position, Graph.graph.graphNodes[i].transform.position);
+                if(Node.CanReach(transform.position, Graph.graph.graphNodes[i].transform.position) && distance != 0)
                 {
-                    available.Enqueue(new ZombieState(next, next.node.adjNodes[i]));
+                    queue.Push(distance, new ZombieState(Graph.graph.graphNodes[i], distance));
+                }
+            }
+            
+            int expansions = 0;
+            while(queue.IsEmpty() == false)
+            {
+                expansions++;
+                if(expansions > 10000)
+                {
+                    break;
+                }
+                ZombieState next = queue.Pop();
+                if(next.node.ReachPlayer)
+                {
+                    Debug.Log(expansions);
+                    path = next;
+                    break;
+                }
+                for(int i = 0; i < next.node.adjNodes.Count; i++)
+                {
+                    if(marked[next.node.adjNodes[i].node.ID] == false)
+                    {
+                        marked[next.node.adjNodes[i].node.ID] = true;
+                        float distance = next.distance + next.node.adjNodes[i].distance;
+                        queue.Push(distance, new ZombieState(next, next.node.adjNodes[i]));
+                    }
                 }
             }
         }
+
         ZombieState n = path;
         if(path != null)
         {

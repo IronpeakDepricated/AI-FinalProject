@@ -18,14 +18,14 @@ public class Node : MonoBehaviour
     {
         for(int i = 0; i < Graph.graph.graphNodes.Count; i++)
         {
-            if(this != Graph.graph.graphNodes[i] && CanReachNode(transform.position, Graph.graph.graphNodes[i].transform.position))
+            if(this != Graph.graph.graphNodes[i] && CanReach(transform.position, Graph.graph.graphNodes[i].transform.position))
             {
                 adjNodes.Add(new NodeConnection(Graph.graph.graphNodes[i], Vector3.Distance(transform.position, Graph.graph.graphNodes[i].transform.position)));
             }
         }
     }
 
-    public static bool CanReachNode(Vector3 origin, Vector3 target)
+    public static bool CanReach(Vector3 origin, Vector3 target)
     {
         Vector3 x = target - origin;
         Vector3 cross = Vector3.Cross(x, Vector3.up);
