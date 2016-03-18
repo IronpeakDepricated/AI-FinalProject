@@ -21,6 +21,6 @@ public class Graph : MonoBehaviour
 
     bool CanReachPlayer(Node node)
     {
-        return Node.CanReachNode(Player.player.transform.position, node);
+        return Node.CanReachNode(Player.player.transform.position, node.transform.position);
     }
 }

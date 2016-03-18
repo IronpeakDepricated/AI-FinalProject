@@ -8,10 +8,16 @@ public class Zombie : MonoBehaviour
 
 	void Update ()
     {
+        if(Node.CanReachNode(transform.position, Player.player.transform.position))
+        {
+            transform.position = Vector3.MoveTowards(transform.position, Player.player.transform.position, Time.deltaTime * 10);
+            path = null;
+            return;
+        }
         Queue<ZombieState> available = new Queue<ZombieState>();
         for(int i = 0; i < Graph.graph.graphNodes.Count; i++)
         {
-            if(Node.CanReachNode(transform.position, Graph.graph.graphNodes[i]))
+            if(Node.CanReachNode(transform.position, Graph.graph.graphNodes[i].transform.position) && Vector3.Distance(transform.position, Graph.graph.graphNodes[i].transform.position) != 0)
             {
                 available.Enqueue(new ZombieState(Graph.graph.graphNodes[i], Vector3.Distance(transform.position, Graph.graph.graphNodes[i].transform.position)));
             }
@@ -28,20 +34,33 @@ public class Zombie : MonoBehaviour
             ZombieState next = available.Dequeue();
             if(next.node.ReachPlayer)
             {
+                Debug.Log(count);
                 path = next;
-                return;
+                break;
             }
             for(int i = 0; i < next.node.adjNodes.Count; i++)
             {
                 available.Enqueue(new ZombieState(next, next.node.adjNodes[i]));
             }
         }
+        ZombieState n = path;
+        if(path != null)
+        {
+            while(n.prev != null)
+            {
+                n = n.prev;
+            }
+            transform.position = Vector3.MoveTowards(transform.position, n.node.transform.position, Time.deltaTime * 5);
+        }
 	}
 
     void OnDrawGizmos()
     {
         if(path == null)
+        {
+            Gizmos.DrawLine(transform.position, Player.player.transform.position);
             return;
+        }
         if(Application.isPlaying == false)
             return;
         ZombieState n = path;
