@@ -3464,7 +3464,7 @@ GameObject:
   - 23: {fileID: 2097932019}
   - 114: {fileID: 2097932018}
   m_Layer: 0
-  m_Name: zombie (1)
+  m_Name: BlindZombie
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3490,12 +3490,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 2097932016}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0caa8131bf007a74a9e131100d63f316, type: 3}
+  m_Script: {fileID: 11500000, guid: 8e512c0fb32cd4b3eae8eaac20660843, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  path:
-    distance: 0
-    node: {fileID: 0}
 --- !u!23 &2097932019
 MeshRenderer:
   m_ObjectHideFlags: 0
