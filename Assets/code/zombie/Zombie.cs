@@ -25,15 +25,19 @@ public class Zombie : MonoBehaviour
 
 	void PlotPath()
 	{
-		bool[] marked = Graph.graph.GetMarked();
-		PriorityQueue<ZombieState> queue = new PriorityQueue<ZombieState>();
-		for(int i = 0; i < Graph.graph.TotalNodeCount(); i++)
+		bool[] marked = new bool[Graph.graph.GraphNodes.Count];
+		for(int i = 0; i < Graph.graph.GraphNodes.Count; i++)
 		{
-			float distance = Vector3.Distance(transform.position, Graph.graph.GetNode(i).transform.position);
-			if(Node.CanReach(transform.position, Graph.graph.GetNode(i).transform.position) && distance != 0)
+			marked[i] = false;
+		}
+		PriorityQueue<ZombieState> queue = new PriorityQueue<ZombieState>();
+		for(int i = 0; i < Graph.graph.GraphNodes.Count; i++)
+		{
+			float distance = Vector3.Distance(transform.position, Graph.graph.GraphNodes[i].Component.transform.position);
+			if(Node.CanReach(transform.position, Graph.graph.GraphNodes[i].Component.transform.position) && distance != 0)
 			{
-				marked[Graph.graph.GetNode(i).ID] = true;
-				ZombieState state = new ZombieState(Graph.graph.GetNode(i), distance);
+				marked[Graph.graph.GraphNodes[i].ID] = true;
+				ZombieState state = new ZombieState(Graph.graph.GraphNodes[i], distance);
 				queue.Push(state.distance, state);
 			}
 		}
@@ -45,7 +49,6 @@ public class Zombie : MonoBehaviour
 			ZombieState next = queue.Pop();
 			if(next.node.CanReachPlayer)
 			{
-				Debug.Log(expansions);
 				path = next;
 				break;
 			}
@@ -59,6 +62,7 @@ public class Zombie : MonoBehaviour
 				}
 			}
 		}
+		Debug.Log(expansions);
 	}
 
 	// Pre: The zombie has found a path
@@ -76,7 +80,7 @@ public class Zombie : MonoBehaviour
 			{
 				Debug.Log ("n is null");
 			}
-			transform.position = Vector3.MoveTowards(transform.position, n.node.transform.position, Time.deltaTime * 5);
+			transform.position = Vector3.MoveTowards(transform.position, n.node.Component.transform.position, Time.deltaTime * 5);
 		}
 	}
 
@@ -94,13 +98,13 @@ public class Zombie : MonoBehaviour
 		}
         ZombieState n = path;
         Gizmos.color = Color.black;
-        Gizmos.DrawLine(n.node.transform.position, Player.player.transform.position);
+        Gizmos.DrawLine(n.node.Component.transform.position, Player.player.transform.position);
         while(n.prev != null)
         {
-            Gizmos.DrawLine(n.node.transform.position, n.prev.node.transform.position);
+            Gizmos.DrawLine(n.node.Component.transform.position, n.prev.node.Component.transform.position);
             n = n.prev;
         }
-        Gizmos.DrawLine(n.node.transform.position, transform.position);
+        Gizmos.DrawLine(n.node.Component.transform.position, transform.position);
     }
 
 }
