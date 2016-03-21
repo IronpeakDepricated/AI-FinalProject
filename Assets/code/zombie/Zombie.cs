@@ -74,7 +74,7 @@ public class Zombie : MonoBehaviour
 			{
 				Debug.Log ("n is null");
 			}
-			transform.position = Vector3.MoveTowards(transform.position, n.node.Component.transform.position, Time.deltaTime * 5);
+            transform.position = Vector3.MoveTowards(transform.position, n.node.Component.transform.position, 5 * Time.deltaTime);
 		}
 	}
 
