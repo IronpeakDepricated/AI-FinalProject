@@ -3370,6 +3370,10 @@ Prefab:
       propertyPath: DrawGizmos
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2300098, guid: 7aa9e1f90a598974190a9e56b997ae97, type: 2}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 7aa9e1f90a598974190a9e56b997ae97, type: 2}
   m_IsPrefabParent: 0

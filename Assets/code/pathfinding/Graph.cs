@@ -25,6 +25,7 @@ public class Graph : MonoBehaviour
         for(int i = 0; i < graphNodes.Count; i++)
         {
             graphNodes[i].CanReachPlayer = CanReachPlayer(graphNodes[i]);
+            graphNodes[i].SetViableMaterial(true);
         }
 
         viableNodes.Clear();
@@ -32,6 +33,7 @@ public class Graph : MonoBehaviour
         {
             if(graphNodes[i].IsViable())
             {
+                graphNodes[i].SetViableMaterial(false);
                 viableNodes.Add(graphNodes[i]);
             }
         }

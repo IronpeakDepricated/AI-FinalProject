@@ -9,6 +9,9 @@ public class Node : MonoBehaviour
     public bool CanReachPlayer;
     public List<NodeConnection> adjNodes = new List<NodeConnection>();
 
+    public Material Valid;
+    public Material Invalid;
+
     void Awake()
     {
         Graph.graph.AddNode(this);
@@ -48,6 +51,18 @@ public class Node : MonoBehaviour
     public bool IsViable()
     {
         return true;
+    }
+
+    public void SetViableMaterial(bool valid)
+    {
+        if(valid)
+        {
+            GetComponent<MeshRenderer>().material = Valid;
+        }
+        else
+        {
+            GetComponent<MeshRenderer>().material = Invalid;
+        }
     }
 
     public void OnDrawGizmosSelected()
