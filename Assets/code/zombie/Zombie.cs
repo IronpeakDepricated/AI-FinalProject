@@ -17,48 +17,54 @@ public class Zombie : MonoBehaviour
         }
         else
         {
-            bool[] marked = Graph.graph.GetMarked();
-            PriorityQueue<ZombieState> queue = new PriorityQueue<ZombieState>();
-            for(int i = 0; i < Graph.graph.TotalNodeCount(); i++)
-            {
-                float distance = Vector3.Distance(transform.position, Graph.graph.GetNode(i).transform.position);
-                if(Node.CanReach(transform.position, Graph.graph.GetNode(i).transform.position) && distance != 0)
-                {
-                    marked[Graph.graph.GetNode(i).ID] = true;
-                    ZombieState state = new ZombieState(Graph.graph.GetNode(i), distance);
-                    queue.Push(state.distance, state);
-                }
-            }
-            
-            int expansions = 0;
-            while(queue.IsEmpty() == false)
-            {
-                expansions++;
-                ZombieState next = queue.Pop();
-                if(next.node.CanReachPlayer)
-                {
-                    Debug.Log(expansions);
-                    path = next;
-                    break;
-                }
-                for(int i = 0; i < next.node.adjNodes.Count; i++)
-                {
-                    if(marked[next.node.adjNodes[i].node.ID] == false)
-                    {
-                        marked[next.node.adjNodes[i].node.ID] = true;
-                        ZombieState state = new ZombieState(next, next.node.adjNodes[i]);
-                        queue.Push(state.distance, state);
-                    }
-                }
-            }
+			PlotPath ();
         }
 
 		MoveDownPath(path);
 	}
 
+	void PlotPath()
+	{
+		bool[] marked = Graph.graph.GetMarked();
+		PriorityQueue<ZombieState> queue = new PriorityQueue<ZombieState>();
+		for(int i = 0; i < Graph.graph.TotalNodeCount(); i++)
+		{
+			float distance = Vector3.Distance(transform.position, Graph.graph.GetNode(i).transform.position);
+			if(Node.CanReach(transform.position, Graph.graph.GetNode(i).transform.position) && distance != 0)
+			{
+				marked[Graph.graph.GetNode(i).ID] = true;
+				ZombieState state = new ZombieState(Graph.graph.GetNode(i), distance);
+				queue.Push(state.distance, state);
+			}
+		}
+
+		int expansions = 0;
+		while(queue.IsEmpty() == false)
+		{
+			expansions++;
+			ZombieState next = queue.Pop();
+			if(next.node.CanReachPlayer)
+			{
+				Debug.Log(expansions);
+				path = next;
+				break;
+			}
+			for(int i = 0; i < next.node.adjNodes.Count; i++)
+			{
+				if(marked[next.node.adjNodes[i].node.ID] == false)
+				{
+					marked[next.node.adjNodes[i].node.ID] = true;
+					ZombieState state = new ZombieState(next, next.node.adjNodes[i]);
+					queue.Push(state.distance, state);
+				}
+			}
+		}
+	}
+
 	// Pre: The zombie has found a path
 	// Post: The zombie has been moved down the path chosen
-	void MoveDownPath(ZombieState path) {
+	void MoveDownPath(ZombieState path) 
+	{
 		ZombieState n = path;
 		if(path != null)
 		{
