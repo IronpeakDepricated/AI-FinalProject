@@ -8,6 +8,7 @@ public class Zombie : MonoBehaviour
 	void Update ()
     {
         path = null;
+		// If the zombie can reach the player it will move towards it
         if(Node.CanReach(transform.position, Player.player.transform.position))
         {
             transform.position = Vector3.MoveTowards(transform.position, Player.player.transform.position, Time.deltaTime * 10);
@@ -52,28 +53,39 @@ public class Zombie : MonoBehaviour
             }
         }
 
-        ZombieState n = path;
-        if(path != null)
-        {
-            while(n.prev != null)
-            {
-                n = n.prev;
-            }
-            if(n.node == null)
-                Debug.Log("n is null");
-            transform.position = Vector3.MoveTowards(transform.position, n.node.transform.position, Time.deltaTime * 5);
-        }
+		MoveDownPath(path);
+	}
+
+	// Pre: The zombie has found a path
+	// Post: The zombie has been moved down the path chosen
+	void MoveDownPath(ZombieState path) {
+		ZombieState n = path;
+		if(path != null)
+		{
+			while(n.prev != null)
+			{
+				n = n.prev;
+			}
+			if (n.node == null) 
+			{
+				Debug.Log ("n is null");
+			}
+			transform.position = Vector3.MoveTowards(transform.position, n.node.transform.position, Time.deltaTime * 5);
+		}
 	}
 
     void OnDrawGizmos()
     {
         if(path == null)
         {
+			Gizmos.color = Color.red;
             Gizmos.DrawLine(transform.position, Player.player.transform.position);
             return;
         }
-        if(Application.isPlaying == false)
-            return;
+		if (Application.isPlaying == false) 
+		{
+			return;
+		}
         ZombieState n = path;
         Gizmos.color = Color.black;
         Gizmos.DrawLine(n.node.transform.position, Player.player.transform.position);
