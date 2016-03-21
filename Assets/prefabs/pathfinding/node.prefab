@@ -75,8 +75,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f325f9545bd072e4a8df2b0deb5236b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ReachPlayer: 0
+  ID: 0
+  CanReachPlayer: 0
   adjNodes: []
+  Valid: {fileID: 2100000, guid: fe37a0b777bbc3e45abe44facbad48a8, type: 2}
+  Invalid: {fileID: 2100000, guid: 69cf0e40879653949b7f03ed32dd0fa8, type: 2}
 --- !u!114 &11489576
 MonoBehaviour:
   m_ObjectHideFlags: 1
