@@ -16,18 +16,15 @@ public class Zombie : MonoBehaviour
         }
         else
         {
-            List<bool> marked = new List<bool>(Graph.graph.graphNodes.Count);
-            for(int i = 0; i < Graph.graph.graphNodes.Count; i++)
-            {
-                marked.Add(false);
-            }
+            bool[] marked = Graph.graph.GetMarked();
             PriorityQueue<ZombieState> queue = new PriorityQueue<ZombieState>();
-            for(int i = 0; i < Graph.graph.graphNodes.Count; i++)
+            for(int i = 0; i < Graph.graph.TotalNodeCount(); i++)
             {
-                float distance = Vector3.Distance(transform.position, Graph.graph.graphNodes[i].transform.position);
-                if(Node.CanReach(transform.position, Graph.graph.graphNodes[i].transform.position) && distance != 0)
+                float distance = Vector3.Distance(transform.position, Graph.graph.GetNode(i).transform.position);
+                if(Node.CanReach(transform.position, Graph.graph.GetNode(i).transform.position) && distance != 0)
                 {
-                    ZombieState state = new ZombieState(Graph.graph.graphNodes[i], distance);
+                    marked[Graph.graph.GetNode(i).ID] = true;
+                    ZombieState state = new ZombieState(Graph.graph.GetNode(i), distance);
                     queue.Push(state.distance, state);
                 }
             }
@@ -36,14 +33,10 @@ public class Zombie : MonoBehaviour
             while(queue.IsEmpty() == false)
             {
                 expansions++;
-                if(expansions > 10000)
-                {
-                    break;
-                }
                 ZombieState next = queue.Pop();
-                if(next.node.ReachPlayer)
+                if(next.node.CanReachPlayer)
                 {
-                    //Debug.Log(expansions);
+                    Debug.Log(expansions);
                     path = next;
                     break;
                 }

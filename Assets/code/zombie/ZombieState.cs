@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
-public class ZombieState : IComparer<ZombieState>
+public class ZombieState
 {
     public ZombieState prev;
     public float distance;
@@ -14,7 +14,7 @@ public class ZombieState : IComparer<ZombieState>
         prev = null;
         this.distance = distance;
         this.node = node;
-        if (node.ReachPlayer)
+        if (node.CanReachPlayer)
         {
             this.distance += Vector3.Distance(node.transform.position, Player.player.transform.position);
         }
@@ -25,21 +25,8 @@ public class ZombieState : IComparer<ZombieState>
         this.prev = prev;
         this.distance = prev.distance + connection.distance;
         this.node = connection.node;
-        if (node.ReachPlayer) {
+        if (node.CanReachPlayer) {
             this.distance += Vector3.Distance(node.transform.position, Player.player.transform.position);
         }
-    }
-
-    public int Compare(ZombieState x, ZombieState y)
-    {
-        if(x.distance < y.distance)
-        {
-            return -1;
-        }
-        if(x.distance > y.distance)
-        {
-            return 1;
-        }
-        return 0;
     }
 }

@@ -6,21 +6,21 @@ public class Node : MonoBehaviour
 {
 
     public int ID;
-    public bool ReachPlayer;
+    public bool CanReachPlayer;
     public List<NodeConnection> adjNodes = new List<NodeConnection>();
 
     void Awake()
     {
-        Graph.graph.graphNodes.Add(this);
+        Graph.graph.AddNode(this);
     }
 
     void Start()
     {
-        for(int i = 0; i < Graph.graph.graphNodes.Count; i++)
+        for(int i = 0; i < Graph.graph.TotalNodeCount(); i++)
         {
-            if(this != Graph.graph.graphNodes[i] && CanReach(transform.position, Graph.graph.graphNodes[i].transform.position))
+            if(this != Graph.graph.GetNode(i) && CanReach(transform.position, Graph.graph.GetNode(i).transform.position))
             {
-                adjNodes.Add(new NodeConnection(Graph.graph.graphNodes[i], Vector3.Distance(transform.position, Graph.graph.graphNodes[i].transform.position)));
+                adjNodes.Add(new NodeConnection(Graph.graph.GetNode(i), Vector3.Distance(transform.position, Graph.graph.GetNode(i).transform.position)));
             }
         }
     }
@@ -45,16 +45,21 @@ public class Node : MonoBehaviour
         return true;
     }
 
+    public bool IsViable()
+    {
+        return true;
+    }
+
     public void OnDrawGizmosSelected()
     {
         if(Application.isPlaying == false)
             return;
         Gizmos.color = Color.green;
-        for(int i = 0; i < Graph.graph.graphNodes.Count; i++)
+        for(int i = 0; i < Graph.graph.TotalNodeCount(); i++)
         {
-            if(this != Graph.graph.graphNodes[i])
+            if(this != Graph.graph.GetNode(i))
             {
-                DrawLine(Graph.graph.graphNodes[i]);
+                DrawLine(Graph.graph.GetNode(i));
             }
         }
     }
