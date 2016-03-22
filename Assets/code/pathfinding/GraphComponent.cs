@@ -16,6 +16,7 @@ public class GraphComponent : MonoBehaviour
         Graph.SetNodeIDs();
         Graph.GenerateGraph();
         Graph.SetPlayerReachableNodes();
+        Graph.GenerateSubgraphs(Player.player);
     }
 
     void Update()
@@ -26,7 +27,7 @@ public class GraphComponent : MonoBehaviour
 
     public bool CanReachPlayer(Node node)
     {
-        return Node.CanReach(Player.player.transform.position, node.Component.transform.position);
+        return Node.CanReach(Player.player.transform.position, node.Component.transform.position, LayerMasks.CanNodeReachPlayer);
     }
 
     void OnDrawGizmosSelected()

@@ -11,7 +11,7 @@ public class BlindedZombie : MonoBehaviour {
     void Update()
     {
         path = null;
-        if (Node.CanReach(transform.position, Player.player.transform.position))
+        if (Node.CanReach(transform.position, Player.player.transform.position, LayerMasks.CanNodeReachPlayer))
         {
             transform.position = Vector3.MoveTowards(transform.position, Player.player.transform.position, Time.deltaTime * 10);
             path = null;

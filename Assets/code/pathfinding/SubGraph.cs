@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-public class SubGraph
+public class SubGraph : IGraph
 {
 
     public List<Node> GraphNodes { get; set; }
@@ -11,7 +11,8 @@ public class SubGraph
         for(int i = 0; i < nodes.Count; i++)
         {
             Node node = new Node(nodes[i]);
-            nodes[i].FindAdjNodes(nodes);
+            node.FindAdjNodes(nodes);
+            GraphNodes.Add(node);
         }
     }
 

@@ -8,8 +8,8 @@ public class Zombie : MonoBehaviour
 	void Update ()
     {
         path = null;
-		// If the zombie can reach the player it will move towards it
-        if(Node.CanReach(transform.position, Player.player.transform.position))
+        // If the zombie can reach the player it will move towards it
+        if(Node.CanReach(transform.position, Player.player.transform.position, LayerMasks.CanNodeReachPlayer))
         {
             transform.position = Vector3.MoveTowards(transform.position, Player.player.transform.position, Time.deltaTime * 10);
             path = null;
@@ -17,35 +17,34 @@ public class Zombie : MonoBehaviour
         }
         else
         {
-			PlotPath ();
+            IGraph graph = Graph.graph.GetSubgraph(transform.position);
+			PlotPath(graph);
         }
 
 		MoveDownPath(path);
 	}
 
-	void PlotPath()
+	void PlotPath(IGraph graph)
 	{
-		bool[] marked = new bool[Graph.graph.GraphNodes.Count];
-		for(int i = 0; i < Graph.graph.GraphNodes.Count; i++)
+		bool[] marked = new bool[graph.GraphNodes.Count];
+		for(int i = 0; i < graph.GraphNodes.Count; i++)
 		{
 			marked[i] = false;
 		}
 		PriorityQueue<ZombieState> queue = new PriorityQueue<ZombieState>();
-		for(int i = 0; i < Graph.graph.GraphNodes.Count; i++)
+		for(int i = 0; i < graph.GraphNodes.Count; i++)
 		{
-			float distance = Vector3.Distance(transform.position, Graph.graph.GraphNodes[i].Component.transform.position);
-			if(Node.CanReach(transform.position, Graph.graph.GraphNodes[i].Component.transform.position) && distance != 0)
+			float distance = Vector3.Distance(transform.position, graph.GraphNodes[i].Component.transform.position);
+			if(Node.CanReach(transform.position, graph.GraphNodes[i].Component.transform.position, LayerMasks.CanNodeReachPlayer) && distance != 0)
 			{
-				marked[Graph.graph.GraphNodes[i].ID] = true;
-				ZombieState state = new ZombieState(Graph.graph.GraphNodes[i], distance);
+				marked[graph.GraphNodes[i].ID] = true;
+				ZombieState state = new ZombieState(graph.GraphNodes[i], distance);
 				queue.Push(state.distance, state);
 			}
 		}
 
-		int expansions = 0;
 		while(queue.IsEmpty() == false)
 		{
-			expansions++;
 			ZombieState next = queue.Pop();
 			if(next.node.CanReachPlayer)
 			{
@@ -62,7 +61,6 @@ public class Zombie : MonoBehaviour
 				}
 			}
 		}
-		Debug.Log(expansions);
 	}
 
 	// Pre: The zombie has found a path
