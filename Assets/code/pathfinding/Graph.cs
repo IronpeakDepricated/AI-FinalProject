@@ -1,88 +1,50 @@
-﻿using UnityEngine;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
-public class Graph : MonoBehaviour
+[System.Serializable]
+public class Graph : IGraph
 {
-    public static Graph graph;
-    private List<Node> graphNodes = new List<Node>();
-    private List<Node> viableNodes = new List<Node>();
 
-    void Awake()
+    public static Graph graph;
+
+    public GraphComponent Component;
+    public List<Node> GraphNodes { get; set; }
+    public List<SubGraph> SubGraphs;
+
+    public Graph(GraphComponent Component)
     {
         Graph.graph = this;
+        this.Component = Component;
+        GraphNodes = new List<Node>();
     }
 
-    void Start()
+    public void SetNodeIDs()
     {
-        for(int i = 0; i < graphNodes.Count; i++)
+        for(int i = 0; i < GraphNodes.Count; i++)
         {
-            graphNodes[i].ID = i;
-        }
-    }
-   
-    void Update()
-    {
-        for(int i = 0; i < graphNodes.Count; i++)
-        {
-            graphNodes[i].CanReachPlayer = CanReachPlayer(graphNodes[i]);
-            graphNodes[i].SetViableMaterial(true);
-        }
-
-        viableNodes.Clear();
-        for(int i = 0; i < graphNodes.Count; i++)
-        {
-            if(graphNodes[i].IsViable())
-            {
-                graphNodes[i].SetViableMaterial(false);
-                viableNodes.Add(graphNodes[i]);
-            }
+            GraphNodes[i].ID = i;
         }
     }
 
-    public bool[] GetMarked()
+    public void GenerateGraph()
     {
-        bool[] marked = new bool[graphNodes.Count];
-
-        for(int i = 0; i < marked.Length; i++)
+        for(int i = 0; i < GraphNodes.Count; i++)
         {
-            marked[i] = true;
-        }
-
-        for(int i = 0; i < viableNodes.Count; i++)
-        {
-            marked[viableNodes[i].ID] = false;
-        }
-
-        return marked;
-    }
-
-    public Node GetNode(int index)
-    {
-        return graphNodes[index];
-    }
-
-    public void AddNode(Node node)
-    {
-        graphNodes.Add(node);
-    }
-
-    public int TotalNodeCount()
-    {
-        return graphNodes.Count;
-    }
-
-    bool CanReachPlayer(Node node)
-    {
-        return Node.CanReach(Player.player.transform.position, node.transform.position);
-    }
-
-    public void OnDrawGizmosSelected()
-    {
-        if(Application.isPlaying == false)
-            return;
-        for(int i = 0; i < graphNodes.Count; i++)
-        {
-            graphNodes[i].OnDrawGizmosSelected();
+            GraphNodes[i].FindAdjNodes(GraphNodes);
         }
     }
+
+    public void SetPlayerReachableNodes()
+    {
+        for (int i = 0; i < GraphNodes.Count; i++)
+        {
+            GraphNodes[i].CanReachPlayer = Component.CanReachPlayer(GraphNodes[i]);
+        }
+    }
+
+    public void GenerateSubgraphs(Player player)
+    {
+        SubGraphs = new List<SubGraph>();
+        SubGraphs.Add(new SubGraph(GraphNodes));
+    }
+
 }

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 [System.Serializable]
 public class ZombieState
@@ -16,7 +14,7 @@ public class ZombieState
         this.node = node;
         if (node.CanReachPlayer)
         {
-            this.distance += Vector3.Distance(node.transform.position, Player.player.transform.position);
+            this.distance += Vector3.Distance(node.Component.transform.position, Player.player.transform.position);
         }
     }
 
@@ -26,7 +24,7 @@ public class ZombieState
         this.distance = prev.distance + connection.distance;
         this.node = connection.node;
         if (node.CanReachPlayer) {
-            this.distance += Vector3.Distance(node.transform.position, Player.player.transform.position);
+            this.distance += Vector3.Distance(node.Component.transform.position, Player.player.transform.position);
         }
     }
 }
