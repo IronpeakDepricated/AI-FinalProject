@@ -86,7 +86,7 @@ public class Zombie : MonoBehaviour, IPathCallback
             {
                 marked[subgraph.GraphNodes[i].ID] = true;
                 ZombieState state = new ZombieState(subgraph.GraphNodes[i], distance);
-                queue.Push(state.distance, state);
+                queue.Push(state.f, state);
             }
         }
 
@@ -104,7 +104,7 @@ public class Zombie : MonoBehaviour, IPathCallback
                 {
                     marked[goal.node.adjNodes[i].node.ID] = true;
                     ZombieState state = new ZombieState(goal, goal.node.adjNodes[i]);
-                    queue.Push(state.distance, state);
+                    queue.Push(state.f, state);
                 }
             }
         }

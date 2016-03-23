@@ -5,28 +5,32 @@ using System.Collections.Generic;
 public class ZombieState
 {
     public ZombieState prev;
-    public float distance;
     public Node node;
+    public float g;
+    public float f;
 
     public ZombieState(Node node, float distance)
     {
         prev = null;
-        this.distance = distance;
+        g = distance;
+        f = g + Vector3.Distance(node.Component.transform.position, Player.player.transform.position);
         this.node = node;
-        if(node.CanReachPlayer)
+        if (node.CanReachPlayer)
         {
-            this.distance += Vector3.Distance(node.Component.transform.position, Player.player.transform.position);
+            this.g += Vector3.Distance(node.Component.transform.position, Player.player.transform.position);
         }
     }
 
     public ZombieState(ZombieState prev, NodeConnection connection)
     {
         this.prev = prev;
-        this.distance = prev.distance + connection.distance;
+        this.g = prev.g + connection.distance;
         this.node = connection.node;
+        float dist = Vector3.Distance(node.Component.transform.position, Player.player.transform.position);
+        this.f = this.g + dist;
         if(node.CanReachPlayer)
         {
-            this.distance += Vector3.Distance(node.Component.transform.position, Player.player.transform.position);
+            this.g += Vector3.Distance(node.Component.transform.position, Player.player.transform.position);
         }
     }
 
