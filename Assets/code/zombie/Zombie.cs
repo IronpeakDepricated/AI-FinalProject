@@ -5,7 +5,7 @@ using System;
 public class Zombie : MonoBehaviour, IPathCallback
 {
 
-    public List<Vector3> Path;
+    public List<Node> Path;
 
     void Start()
     {
@@ -25,11 +25,11 @@ public class Zombie : MonoBehaviour, IPathCallback
     }
 
     int pathindex = 0;
-    void MoveDownPath(List<Vector3> path)
+    void MoveDownPath(List<Node> path)
     {
         if(path != null && pathindex < path.Count)
         {
-            if(MoveTowards(path[pathindex], 5))
+            if(MoveTowards(path[pathindex].Component.transform.position, 5))
             {
                 pathindex++;
             }
@@ -57,14 +57,14 @@ public class Zombie : MonoBehaviour, IPathCallback
         Vector3 position = transform.position;
         for(int i = 0; i < Path.Count; i++)
         {
-            Gizmos.DrawLine(position, Path[i]);
+            Gizmos.DrawLine(position, Path[i].Component.transform.position);
         }
         Gizmos.DrawLine(position, Player.player.transform.position);
     }
 
-    public List<Vector3> PlotPath()
+    public List<Node> PlotPath()
     {
-        SubGraph subgraph = Graph.graph.GetSubgraph(transform.position) as SubGraph;
+        IGraph subgraph = Graph.graph.GetSubgraph(transform.position);
 
         if(subgraph == null)
         {
@@ -112,7 +112,7 @@ public class Zombie : MonoBehaviour, IPathCallback
 
     }
 
-    public void OnPathComplete(List<Vector3> path)
+    public void OnPathComplete(List<Node> path)
     {
         pathindex = 0;
         Path = path;

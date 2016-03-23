@@ -30,19 +30,19 @@ public class ZombieState
         }
     }
 
-    public List<Vector3> ToPath()
+    public List<Node> ToPath()
     {
-        List<Vector3> path = new List<Vector3>();
+        List<Node> path = new List<Node>();
         AddToPath(this, path);
         return path;
     }
 
-    void AddToPath(ZombieState state, List<Vector3> path)
+    void AddToPath(ZombieState state, List<Node> path)
     {
         if(state != null)
         {
             AddToPath(state.prev, path);
-            path.Add(state.node.Component.transform.position);
+            path.Add(state.node);
         }
     }
 

@@ -3,8 +3,8 @@ using System.Collections.Generic;
 
 public interface IPathCallback
 {
-    List<Vector3> PlotPath();
-    void OnPathComplete(List<Vector3> path);
+    List<Node> PlotPath();
+    void OnPathComplete(List<Node> path);
 
     void CleanupCurrentPath();
     bool KeepInPathScheduler();
