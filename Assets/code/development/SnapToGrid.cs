@@ -6,8 +6,12 @@ public class SnapToGrid : MonoBehaviour
 	
 	void Update ()
     {
+        if(Application.isPlaying == true)
+        {
+            return;
+        }
         int x = Mathf.RoundToInt(transform.position.x);
-        int y = Mathf.RoundToInt(transform.position.y);
+        float y = 0.5f;
         int z = Mathf.RoundToInt(transform.position.z);
         transform.position = new Vector3(x, y, z);
     }

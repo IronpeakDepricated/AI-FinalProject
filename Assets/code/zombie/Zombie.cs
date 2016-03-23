@@ -58,6 +58,7 @@ public class Zombie : MonoBehaviour, IPathCallback
         for(int i = 0; i < Path.Count; i++)
         {
             Gizmos.DrawLine(position, Path[i].Component.transform.position);
+            position = Path[i].Component.transform.position;
         }
         Gizmos.DrawLine(position, Player.player.transform.position);
     }

@@ -17,7 +17,6 @@ public class PathScheduler : MonoBehaviour
     {
         if(requests.IsEmpty() == false)
         {
-            Debug.Log("Request");
             IPathCallback request = requests.Pop();
             request.CleanupCurrentPath();
             if(request.KeepInPathScheduler())
