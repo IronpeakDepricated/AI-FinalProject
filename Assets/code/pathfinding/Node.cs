@@ -8,8 +8,8 @@ public class Node
     public int ID;
     public bool CanReachPlayer;
     public List<NodeConnection> adjNodes = new List<NodeConnection>();
-
     public int Selected;
+    public int subIndex;
     public NodeComponent Component;
 
     public Node(NodeComponent Component)
@@ -27,6 +27,7 @@ public class Node
         this.Component = node.Component;
         this.Selected = node.Selected;
         this.ID = node.ID;
+        this.subIndex = node.subIndex;
     }
 
     public void FindAdjNodes(List<Node> nodes)
@@ -58,6 +59,15 @@ public class Node
             return false;
         }
         return true;
+    }
+
+    public bool isInAdjList(Node n) {
+        foreach (NodeConnection nc in adjNodes) {
+            if (nc.node.Equals(n)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

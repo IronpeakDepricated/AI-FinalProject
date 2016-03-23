@@ -1,4 +1,5 @@
-﻿public class NodeConnection
+﻿
+public class NodeConnection
 {
     public Node node;
     public float distance;
@@ -8,4 +9,6 @@
         this.node = node;
         this.distance = distance;
     }
+
+
 }

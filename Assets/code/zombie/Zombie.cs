@@ -5,6 +5,8 @@ public class Zombie : MonoBehaviour
 {
     public ZombieState path;
 
+    SubGraph gman;
+
 	void Update ()
     {
         path = null;
@@ -17,46 +19,46 @@ public class Zombie : MonoBehaviour
         }
         else
         {
-            IGraph graph = Graph.graph.GetSubgraph(transform.position);
-			PlotPath(graph);
+            gman = Graph.graph.GetSubgraph(transform.position) as SubGraph;
+
+            PlotPath(gman);
         }
 
 		MoveDownPath(path);
-	}
+	} 
 
-	void PlotPath(IGraph graph)
+	void PlotPath(IGraph subgraph)
 	{
-		bool[] marked = new bool[graph.GraphNodes.Count];
-		for(int i = 0; i < graph.GraphNodes.Count; i++)
+		bool[] marked = new bool[Graph.graph.GraphNodes.Count];
+		for(int i = 0; i < subgraph.GraphNodes.Count; i++)
 		{
 			marked[i] = false;
 		}
 		PriorityQueue<ZombieState> queue = new PriorityQueue<ZombieState>();
-		for(int i = 0; i < graph.GraphNodes.Count; i++)
+		for(int i = 0; i < subgraph.GraphNodes.Count; i++)
 		{
-			float distance = Vector3.Distance(transform.position, graph.GraphNodes[i].Component.transform.position);
-			if(Node.CanReach(transform.position, graph.GraphNodes[i].Component.transform.position, LayerMasks.CanNodeReachPlayer) && distance != 0)
+			float distance = Vector3.Distance(transform.position, subgraph.GraphNodes[i].Component.transform.position);
+			if(Node.CanReach(transform.position, subgraph.GraphNodes[i].Component.transform.position, LayerMasks.CanNodeReachPlayer) && distance != 0)
 			{
-				marked[graph.GraphNodes[i].ID] = true;
-				ZombieState state = new ZombieState(graph.GraphNodes[i], distance);
+				marked[subgraph.GraphNodes[i].ID] = true;
+				ZombieState state = new ZombieState(subgraph.GraphNodes[i], distance);
 				queue.Push(state.distance, state);
 			}
 		}
 
 		while(queue.IsEmpty() == false)
 		{
-			ZombieState next = queue.Pop();
-			if(next.node.CanReachPlayer)
+			path = queue.Pop();
+			if(path.node.CanReachPlayer)
 			{
-				path = next;
 				break;
 			}
-			for(int i = 0; i < next.node.adjNodes.Count; i++)
+			for(int i = 0; i < path.node.adjNodes.Count; i++)
 			{
-				if(marked[next.node.adjNodes[i].node.ID] == false)
+				if(marked[path.node.adjNodes[i].node.ID] == false)
 				{
-					marked[next.node.adjNodes[i].node.ID] = true;
-					ZombieState state = new ZombieState(next, next.node.adjNodes[i]);
+					marked[path.node.adjNodes[i].node.ID] = true;
+					ZombieState state = new ZombieState(path, path.node.adjNodes[i]);
 					queue.Push(state.distance, state);
 				}
 			}
@@ -73,10 +75,6 @@ public class Zombie : MonoBehaviour
 			while(n.prev != null)
 			{
 				n = n.prev;
-			}
-			if (n.node == null) 
-			{
-				Debug.Log ("n is null");
 			}
             transform.position = Vector3.MoveTowards(transform.position, n.node.Component.transform.position, 5 * Time.deltaTime);
 		}
@@ -103,6 +101,16 @@ public class Zombie : MonoBehaviour
             n = n.prev;
         }
         Gizmos.DrawLine(n.node.Component.transform.position, transform.position);
+    }
+
+    void OnDrawGizmosSelected()
+    {
+        if(Application.isPlaying == false)
+            return;
+        for(int i = 0; i < gman.GraphNodes.Count; i++)
+        {
+            //Gizmos.DrawSphere(gman.GraphNodes[i].Component.transform.position, 2);
+        }
     }
 
 }
