@@ -16,13 +16,13 @@ public class GraphComponent : MonoBehaviour
         Graph.SetNodeIDs();
         Graph.GenerateGraph();
         Graph.SetPlayerReachableNodes();
-        Graph.GenerateSubgraphs(Player.player);
+        Graph.GenerateSubGraphs(Player.player);
     }
 
     void Update()
     {
         Graph.SetPlayerReachableNodes();
-        Graph.GenerateSubgraphs(Player.player);
+        Graph.GenerateSubGraphs(Player.player);
     }
 
     public bool CanReachPlayer(Node node)

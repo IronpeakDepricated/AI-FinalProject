@@ -5,15 +5,26 @@ public class SubGraph : IGraph
 
     public List<Node> GraphNodes { get; set; }
 
-    public SubGraph(List<Node> nodes)
+    public SubGraph()
     {
         GraphNodes = new List<Node>();
-        for(int i = 0; i < nodes.Count; i++)
+    }
+
+    public SubGraph(List<Node> g)
+    {
+        GraphNodes = g;
+    }
+
+    public bool ContainsID(int ID)
+    {
+        for(int i = 0; i < GraphNodes.Count; i++)
         {
-            Node node = new Node(nodes[i]);
-            node.FindAdjNodes(nodes);
-            GraphNodes.Add(node);
+            if(GraphNodes[i].ID == ID)
+            {
+                return true;
+            }
         }
+        return false;
     }
 
 }
