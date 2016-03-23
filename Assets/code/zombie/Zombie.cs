@@ -109,7 +109,12 @@ public class Zombie : MonoBehaviour, IPathCallback
             }
         }
 
-        return goal.ToPath();
+        List<Node> path = goal.ToPath();
+        for(int i = 0; i < path.Count; i++)
+        {
+            path[i].Selected++;
+        }
+        return path;
 
     }
 
@@ -121,7 +126,10 @@ public class Zombie : MonoBehaviour, IPathCallback
 
     public void CleanupCurrentPath()
     {
-
+        for(int i = 0; i < Path.Count; i++)
+        {
+            Path[i].Selected--;
+        }
     }
 
     public bool KeepInPathScheduler()
