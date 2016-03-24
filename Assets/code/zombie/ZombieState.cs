@@ -13,12 +13,8 @@ public class ZombieState
     {
         prev = null;
         g = distance;
-        f = g + Vector3.Distance(node.Component.transform.position, Player.player.transform.position);
         this.node = node;
-        if (node.CanReachPlayer)
-        {
-            this.g += Vector3.Distance(node.Component.transform.position, Player.player.transform.position);
-        }
+        f = g + node.DistanceToPlayer + node.Selected;
     }
 
     public ZombieState(ZombieState prev, NodeConnection connection)
@@ -26,12 +22,7 @@ public class ZombieState
         this.prev = prev;
         this.g = prev.g + connection.distance;
         this.node = connection.node;
-        float dist = Vector3.Distance(node.Component.transform.position, Player.player.transform.position);
-        this.f = this.g + dist;
-        if(node.CanReachPlayer)
-        {
-            this.g += Vector3.Distance(node.Component.transform.position, Player.player.transform.position);
-        }
+        this.f = this.g + node.DistanceToPlayer + node.Selected;
     }
 
     public List<Node> ToPath()

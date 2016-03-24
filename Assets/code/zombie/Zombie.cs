@@ -31,6 +31,7 @@ public class Zombie : MonoBehaviour, IPathCallback
         {
             if(MoveTowards(path[pathindex].Component.transform.position, 5))
             {
+                path[pathindex].Select(10);
                 pathindex++;
             }
         }
@@ -126,7 +127,7 @@ public class Zombie : MonoBehaviour, IPathCallback
 
     public void CleanupCurrentPath()
     {
-        for(int i = 0; i < Path.Count; i++)
+        for(int i = pathindex; i < Path.Count; i++)
         {
             Path[i].Selected--;
         }
@@ -139,6 +140,10 @@ public class Zombie : MonoBehaviour, IPathCallback
 
     public bool WantsToRecalculatePath()
     {
-        return true;
+        if(Path == null || Path.Count < 1)
+        {
+            return true;
+        }
+        return Path[Path.Count - 1].CanReachPlayer == false;
     }
 }
