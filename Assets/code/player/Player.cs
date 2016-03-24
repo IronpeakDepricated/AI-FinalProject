@@ -4,44 +4,64 @@ using System.Collections;
 public class Player : MonoBehaviour
 {
     public static Player player;
-	private float moveSpeed = 1;
+    public Rigidbody rb;
+    
+    public float MovementSpeed;
+    public float RotationSpeed;
+
 
 	void Awake ()
     {
         Player.player = this;
+        rb = GetComponent<Rigidbody>();
+        
 	}
 
 	void Update() {
 		// Rotate left
 		if (Input.GetKey(KeyCode.LeftArrow)) 
 		{
-			transform.Rotate(0, -1, 0);
+            
+			transform.Rotate(0, -RotationSpeed, 0);
 		}
 		// Rotate right
 		if (Input.GetKey(KeyCode.RightArrow)) 
 		{
-			transform.Rotate(0, 1, 0);
+			transform.Rotate(0, RotationSpeed, 0);
 		}
+        
+        /*
 		// Strafe left
-		if (Input.GetKey (KeyCode.A)) 
+		if (Input.GetAxis(KeyCode.A)) 
 		{ 
-			transform.position -= new Vector3(1,0,0);
+            rb.MovePosition(transform.position - transform.right * Time.deltaTime * MovementSpeed);
+			//transform.position -= new Vector3(1,0,0);
 		}
 		// Move forward
-		if (Input.GetKey (KeyCode.W)) 
+		if (Input.GetKey(KeyCode.W)) 
 		{
-			transform.position += transform.forward*moveSpeed;
+			//transform.position += transform.forward*moveSpeed;
+            rb.MovePosition(transform.position + transform.forward * Time.deltaTime * MovementSpeed);
+
 		} 
 		// Move backward
-		if (Input.GetKey (KeyCode.S)) 
+		if (Input.GetKey(KeyCode.S)) 
 		{
-			transform.position -= transform.forward * moveSpeed;
+            rb.MovePosition(transform.position - transform.forward * Time.deltaTime * MovementSpeed);
+
+			//transform.position -= transform.forward * moveSpeed;
 		}
 		// Strafe right     
-		if (Input.GetKey (KeyCode.D)) 
+		if (Input.GetKey(KeyCode.D)) 
 		{
-			transform.position += new Vector3(1,0,0);
-		} 
+            rb.MovePosition(transform.position + transform.right * Time.deltaTime * MovementSpeed);
+			//transform.position += new Vector3(1,0,0);
+		} */
+        float moveHorizontal = Input.GetAxis ("Horizontal");
+        float moveVertical = Input.GetAxis ("Vertical");
+
+        Vector3 movement = new Vector3 (moveHorizontal, 0.0f, moveVertical);
+        rb.velocity = movement.normalized * MovementSpeed;
 	}
 
 }
