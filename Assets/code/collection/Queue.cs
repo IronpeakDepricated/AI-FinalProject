@@ -23,6 +23,11 @@
         back = null;
     }
 
+    public int Size()
+    {
+        return count;
+    }
+
     public bool IsEmpty()
     {
         return count == 0;
