@@ -53,6 +53,20 @@ public class Graph : IGraph
         }
     }
 
+    public void DeselectNodes()
+    {
+        for(int i = 0; i < GraphNodes.Count; i++)
+        {
+            if(GraphNodes[i].CanReachPlayer == false)
+            {
+                if(GraphNodes[i].Selections.Size() != 0)
+                {
+                    GraphNodes[i].Selections = new Queue<Node.NodeSelected>();
+                }
+            }
+        }
+    }
+
     public void GenerateSubGraphs(Player player)
     {
         CreateTriggers(player);

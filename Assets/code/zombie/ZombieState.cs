@@ -6,30 +6,33 @@ public class ZombieState
 {
     public ZombieState prev;
     public Node node;
+    public float distance;
     public float g;
     public float f;
 
     public ZombieState(Node node, float distance)
     {
-        prev = null;
-        g = distance;
+        this.prev = null;
+        this.distance = distance;
+        this.g = distance + node.Selected * 1000;
         this.node = node;
-        f = g + node.DistanceToPlayer + node.Selected;
+        this.f = this.g + node.DistanceToPlayer;
     }
 
     public ZombieState(ZombieState prev, NodeConnection connection)
     {
         this.prev = prev;
-        this.g = prev.g + connection.distance;
+        this.distance = prev.distance + connection.distance;
+        this.g = prev.g + connection.distance + connection.node.Selected * 1000;
         this.node = connection.node;
-        this.f = this.g + node.DistanceToPlayer + node.Selected;
+        this.f = this.g + node.DistanceToPlayer;
     }
 
-    public List<Node> ToPath()
+    public Path ToPath()
     {
         List<Node> path = new List<Node>();
         AddToPath(this, path);
-        return path;
+        return new Path(path, distance);
     }
 
     void AddToPath(ZombieState state, List<Node> path)

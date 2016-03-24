@@ -9,8 +9,24 @@ public class Node
     {
         float timeselected;
         float duration;
+        Zombie zombie;
 
-        public NodeSelected(float currenttime, float duration)
+        public Zombie Zombie
+        {
+            get
+            {
+                return zombie;
+            }
+        }
+
+        public NodeSelected(Zombie zombie, float currenttime, float duration)
+        {
+            this.timeselected = currenttime;
+            this.duration = duration;
+            this.zombie = zombie;
+        }
+
+        public void Select(float currenttime, float duration)
         {
             this.timeselected = currenttime;
             this.duration = duration;
@@ -20,6 +36,7 @@ public class Node
         {
             return currenttime >= timeselected + duration;
         }
+
     }
 
     public int ID;
@@ -42,10 +59,38 @@ public class Node
         this.ID = 0;
     }
 
-    public void Select(float duration)
+    public void Select(Zombie zombie, float duration)
     {
-        Selections.Push(new NodeSelected(Time.timeSinceLevelLoad, duration));
+        int count = Selections.Size();
+        for(int i = 0; i < count; i++)
+        {
+            NodeSelected node = Selections.Pop();
+            if(node.Zombie == zombie)
+            {
+                node.Select(Time.timeSinceLevelLoad, duration);
+                Selections.Push(node);
+                return;
+            }
+            Selections.Push(node);
+        }
+        Selections.Push(new NodeSelected(zombie, Time.timeSinceLevelLoad, duration));
         Selected++;
+    }
+
+    public void Deselect(Zombie zombie)
+    {
+        int count = Selections.Size();
+        for(int i = 0; i < count; i++)
+        {
+            NodeSelected node = Selections.Pop();
+            if(node.Zombie == zombie)
+            {
+                Selected--;
+                return;
+            }
+            Selections.Push(node);
+        }
+        Debug.Log("INCORRECT");
     }
 
     public void DeselectExpired()
@@ -60,6 +105,7 @@ public class Node
             }
             else
             {
+                Debug.Log("Expired");
                 Selected--;
             }
         }

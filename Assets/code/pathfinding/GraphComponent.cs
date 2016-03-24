@@ -25,6 +25,7 @@ public class GraphComponent : MonoBehaviour
         Graph.SetDistanceToPlayer();
         Graph.SetPlayerReachableNodes();
         Graph.GenerateSubGraphs(Player.player);
+        Graph.DeselectNodes();
     }
 
     public bool CanReachPlayer(Node node)

@@ -16,6 +16,11 @@ public class NodeComponent : MonoBehaviour
         Node.FindAdjNodes(Graph.graph.GraphNodes);
     }
 
+    void Update()
+    {
+        Node.DeselectExpired();
+    }
+
     public void OnDrawGizmosSelected()
     {
         if (Application.isPlaying == false)

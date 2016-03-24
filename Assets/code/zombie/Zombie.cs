@@ -1,11 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
-using System;
 
 public class Zombie : MonoBehaviour, IPathCallback
 {
 
-    public List<Node> Path;
+    public Path Path;
 
     void Start()
     {
@@ -18,6 +17,11 @@ public class Zombie : MonoBehaviour, IPathCallback
         if(Node.CanReach(transform.position, Player.player.transform.position, LayerMasks.CanNodeReachPlayer))
         {
             MoveTowards(Player.player.transform.position, 10);
+            if(Path != null && Path.Nodes.Count != 0)
+            {
+                Path.Nodes[Path.Nodes.Count - 1].Select(this, 10);
+            }
+            CleanupCurrentPath();
             return;
         }
 
@@ -25,13 +29,12 @@ public class Zombie : MonoBehaviour, IPathCallback
     }
 
     int pathindex = 0;
-    void MoveDownPath(List<Node> path)
+    void MoveDownPath(Path path)
     {
-        if(path != null && pathindex < path.Count)
+        if(path != null && pathindex < path.Nodes.Count)
         {
-            if(MoveTowards(path[pathindex].Component.transform.position, 5))
+            if(MoveTowards(path.Nodes[pathindex].Component.transform.position, 5))
             {
-                path[pathindex].Select(10);
                 pathindex++;
             }
         }
@@ -56,16 +59,21 @@ public class Zombie : MonoBehaviour, IPathCallback
         }
         Gizmos.color = Color.black;
         Vector3 position = transform.position;
-        for(int i = 0; i < Path.Count; i++)
+        for(int i = pathindex; i < Path.Nodes.Count; i++)
         {
-            Gizmos.DrawLine(position, Path[i].Component.transform.position);
-            position = Path[i].Component.transform.position;
+            Gizmos.DrawLine(position, Path.Nodes[i].Component.transform.position);
+            position = Path.Nodes[i].Component.transform.position;
         }
         Gizmos.DrawLine(position, Player.player.transform.position);
     }
 
-    public List<Node> PlotPath()
+    public Path PlotPath()
     {
+        if(Node.CanReach(transform.position, Player.player.transform.position, LayerMasks.CanNodeReachPlayer))
+        {
+            return new Path(new List<Node>(), Vector3.Distance(transform.position, Player.player.transform.position));
+        }
+        
         IGraph subgraph = Graph.graph.GetSubgraph(transform.position);
 
         if(subgraph == null)
@@ -101,36 +109,41 @@ public class Zombie : MonoBehaviour, IPathCallback
             }
             for(int i = 0; i < goal.node.adjNodes.Count; i++)
             {
-                if(marked[goal.node.adjNodes[i].node.ID] == false)
+                if(marked[goal.node.adjNodes[i].node.ID] == false && goal.node.subIndex == goal.node.adjNodes[i].node.subIndex)
                 {
-                    marked[goal.node.adjNodes[i].node.ID] = true;
                     ZombieState state = new ZombieState(goal, goal.node.adjNodes[i]);
+                    marked[goal.node.adjNodes[i].node.ID] = true;
                     queue.Push(state.f, state);
                 }
             }
         }
 
-        List<Node> path = goal.ToPath();
-        for(int i = 0; i < path.Count; i++)
+        if(goal == null)
         {
-            path[i].Selected++;
+            return new Path(new List<Node>(), 0);
         }
-        return path;
 
+        return goal.ToPath();
     }
 
-    public void OnPathComplete(List<Node> path)
+    public void OnPathComplete(Path path)
     {
-        pathindex = 0;
         Path = path;
+        pathindex = 0;
+        if(path.Nodes.Count != 0)
+        {
+            Path.Nodes[Path.Nodes.Count - 1].Select(this, 1000);
+        }
     }
 
     public void CleanupCurrentPath()
     {
-        for(int i = pathindex; i < Path.Count; i++)
+        if(Path != null && Path.Nodes.Count != 0)
         {
-            Path[i].Selected--;
+            Path.Nodes[Path.Nodes.Count - 1].Deselect(this);
         }
+        pathindex = 0;
+        Path = null;
     }
 
     public bool KeepInPathScheduler()
@@ -140,10 +153,8 @@ public class Zombie : MonoBehaviour, IPathCallback
 
     public bool WantsToRecalculatePath()
     {
-        if(Path == null || Path.Count < 1)
-        {
+        if(Path == null || Path.Nodes.Count == 0)
             return true;
-        }
-        return Path[Path.Count - 1].CanReachPlayer == false;
+        return Path.Nodes[Path.Nodes.Count - 1].CanReachPlayer == false;
     }
 }

@@ -23,20 +23,23 @@ public class PathScheduler : MonoBehaviour
 
     void Update()
     {
-        if(requests.IsEmpty() == false)
+        for(int i = 0; i < 10; i++)
         {
-            ExecuteNextRequest();
+            if(requests.IsEmpty() == false)
+            {
+                ExecuteNextRequest();
+            }
         }
     }
 
     void ExecuteNextRequest()
     {
         IPathCallback request = requests.Pop();
-        request.CleanupCurrentPath();
         if(request.KeepInPathScheduler())
         {
             if(request.WantsToRecalculatePath())
             {
+                request.CleanupCurrentPath();
                 request.OnPathComplete(request.PlotPath());
             }
             requests.Push(request);
