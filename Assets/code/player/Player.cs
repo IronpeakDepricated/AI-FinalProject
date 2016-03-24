@@ -8,6 +8,12 @@ public class Player : MonoBehaviour
     
     public float MovementSpeed;
     public float RotationSpeed;
+    
+    public GameObject shot;
+    public Transform shotSpawn;
+    public float fireRate;
+    
+    private float nextFire;
 
 
 	void Awake ()
@@ -17,51 +23,22 @@ public class Player : MonoBehaviour
         
 	}
 
-	void Update() {
-		// Rotate left
-		if (Input.GetKey(KeyCode.LeftArrow)) 
-		{
-            
-			transform.Rotate(0, -RotationSpeed, 0);
-		}
-		// Rotate right
-		if (Input.GetKey(KeyCode.RightArrow)) 
-		{
-			transform.Rotate(0, RotationSpeed, 0);
-		}
-        
-        /*
-		// Strafe left
-		if (Input.GetAxis(KeyCode.A)) 
-		{ 
-            rb.MovePosition(transform.position - transform.right * Time.deltaTime * MovementSpeed);
-			//transform.position -= new Vector3(1,0,0);
-		}
-		// Move forward
-		if (Input.GetKey(KeyCode.W)) 
-		{
-			//transform.position += transform.forward*moveSpeed;
-            rb.MovePosition(transform.position + transform.forward * Time.deltaTime * MovementSpeed);
-
-		} 
-		// Move backward
-		if (Input.GetKey(KeyCode.S)) 
-		{
-            rb.MovePosition(transform.position - transform.forward * Time.deltaTime * MovementSpeed);
-
-			//transform.position -= transform.forward * moveSpeed;
-		}
-		// Strafe right     
-		if (Input.GetKey(KeyCode.D)) 
-		{
-            rb.MovePosition(transform.position + transform.right * Time.deltaTime * MovementSpeed);
-			//transform.position += new Vector3(1,0,0);
-		} */
+	void Update() 
+    {
+        if (Input.GetButton("Fire1") && Time.time > nextFire)
+        {
+            nextFire = Time.time + fireRate;
+            Instantiate(shot, shotSpawn.position, shotSpawn.rotation);
+        }
+	}
+    
+    void FixedUpdate()
+    {
         float moveHorizontal = Input.GetAxis ("Horizontal");
         float moveVertical = Input.GetAxis ("Vertical");
 
         Vector3 movement = new Vector3 (moveHorizontal, 0.0f, moveVertical);
         rb.velocity = movement.normalized * MovementSpeed;
-	}
+    }
 
 }
