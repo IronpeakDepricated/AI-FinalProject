@@ -6,6 +6,9 @@ public class Zombie : MonoBehaviour, IPathCallback
 
     public Path Path;
 
+    public float MovementSpeed;
+    public float FrenzyMovementSpeed;
+
     void Start()
     {
         PathScheduler.scheduler.AddToPathScheduler(this);
@@ -16,12 +19,7 @@ public class Zombie : MonoBehaviour, IPathCallback
         // If the zombie can reach the player it will move towards it
         if(Node.CanReach(transform.position, Player.player.transform.position, LayerMasks.CanNodeReachPlayer))
         {
-            MoveTowards(Player.player.transform.position, 10);
-            if(Path != null && Path.Nodes.Count != 0)
-            {
-                Path.Nodes[Path.Nodes.Count - 1].Select(this, 10);
-            }
-            CleanupCurrentPath();
+            MoveTowards(Player.player.transform.position, FrenzyMovementSpeed);
             return;
         }
 
@@ -33,7 +31,7 @@ public class Zombie : MonoBehaviour, IPathCallback
     {
         if(path != null && pathindex < path.Nodes.Count)
         {
-            if(MoveTowards(path.Nodes[pathindex].Component.transform.position, 5))
+            if(MoveTowards(path.Nodes[pathindex].Component.transform.position, MovementSpeed))
             {
                 pathindex++;
             }
@@ -130,17 +128,23 @@ public class Zombie : MonoBehaviour, IPathCallback
     {
         Path = path;
         pathindex = 0;
-        if(path.Nodes.Count != 0)
+        for(int i = 0; i < Path.Nodes.Count; i++)
         {
-            Path.Nodes[Path.Nodes.Count - 1].Select(this, 1000);
+            if(Path.Nodes[i].DepthFromPlayer < 2)
+            {
+                Path.Nodes[i].Select(this, Path.Nodes[i].DistanceToPlayer / MovementSpeed);
+            }
         }
     }
 
     public void CleanupCurrentPath()
     {
-        if(Path != null && Path.Nodes.Count != 0)
+        if(Path != null)
         {
-            Path.Nodes[Path.Nodes.Count - 1].Deselect(this);
+            for(int i = pathindex; i < Path.Nodes.Count; i++)
+            {
+                Path.Nodes[i].Deselect(this);
+            }
         }
         pathindex = 0;
         Path = null;
@@ -153,8 +157,6 @@ public class Zombie : MonoBehaviour, IPathCallback
 
     public bool WantsToRecalculatePath()
     {
-        if(Path == null || Path.Nodes.Count == 0)
-            return true;
-        return Path.Nodes[Path.Nodes.Count - 1].CanReachPlayer == false;
+        return true;
     }
 }

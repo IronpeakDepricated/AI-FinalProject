@@ -15,34 +15,33 @@ public class PathScheduler : MonoBehaviour
 
     void Start()
     {
-        for(int i = 0; i < requests.Size(); i++)
-        {
-            ExecuteNextRequest();
-        }
+        ExecuteRequests(requests.Size());
     }
 
     void Update()
     {
-        for(int i = 0; i < 10; i++)
+        if(requests.IsEmpty() == false)
         {
-            if(requests.IsEmpty() == false)
-            {
-                ExecuteNextRequest();
-            }
+            ExecuteRequests(10);
         }
     }
 
-    void ExecuteNextRequest()
+    void ExecuteRequests(int count)
     {
-        IPathCallback request = requests.Pop();
-        if(request.KeepInPathScheduler())
+        int size = requests.Size();
+        for(int i = 0; i < size && 0 < count; i++)
         {
-            if(request.WantsToRecalculatePath())
+            IPathCallback request = requests.Pop();
+            if(request.KeepInPathScheduler())
             {
-                request.CleanupCurrentPath();
-                request.OnPathComplete(request.PlotPath());
+                if(request.WantsToRecalculatePath())
+                {
+                    request.CleanupCurrentPath();
+                    request.OnPathComplete(request.PlotPath());
+                    count--;
+                }
+                requests.Push(request);
             }
-            requests.Push(request);
         }
     }
 

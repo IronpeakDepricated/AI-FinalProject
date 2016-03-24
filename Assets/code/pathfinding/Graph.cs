@@ -39,9 +39,32 @@ public class Graph : IGraph
 
     public void SetPlayerReachableNodes()
     {
+        int count = graph.GraphNodes.Count;
+        bool[] marked = new bool[count];
+        Queue<Node> queue = new Queue<Node>();
         for (int i = 0; i < GraphNodes.Count; i++)
         {
-            GraphNodes[i].CanReachPlayer = Component.CanReachPlayer(GraphNodes[i]);
+            if(Component.CanReachPlayer(GraphNodes[i]))
+            {
+                marked[GraphNodes[i].ID] = true;
+                queue.Push(GraphNodes[i]);
+                GraphNodes[i].DepthFromPlayer = 0;
+                count--;
+            }
+        }
+        while(count > 0 && queue.IsEmpty() == false)
+        {
+            Node node = queue.Pop();
+            for(int i = 0; i < node.adjNodes.Count; i++)
+            {
+                if(marked[node.adjNodes[i].node.ID] == false)
+                {
+                    marked[node.adjNodes[i].node.ID] = true;
+                    queue.Push(node.adjNodes[i].node);
+                    node.adjNodes[i].node.DepthFromPlayer = node.DepthFromPlayer + 1;
+                    count--;
+                }
+            }
         }
     }
 
@@ -57,13 +80,7 @@ public class Graph : IGraph
     {
         for(int i = 0; i < GraphNodes.Count; i++)
         {
-            if(GraphNodes[i].CanReachPlayer == false)
-            {
-                if(GraphNodes[i].Selections.Size() != 0)
-                {
-                    GraphNodes[i].Selections = new Queue<Node.NodeSelected>();
-                }
-            }
+            GraphNodes[i].DeselectExpired();
         }
     }
 

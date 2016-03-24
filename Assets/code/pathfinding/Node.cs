@@ -40,7 +40,7 @@ public class Node
     }
 
     public int ID;
-    public bool CanReachPlayer;
+    public int DepthFromPlayer;
     public float DistanceToPlayer;
     public List<NodeConnection> adjNodes = new List<NodeConnection>();
     public int Selected;
@@ -48,11 +48,19 @@ public class Node
     public NodeComponent Component;
     public Queue<NodeSelected> Selections;
 
+    public bool CanReachPlayer
+    {
+        get
+        {
+            return DepthFromPlayer == 0;
+        }
+    }
+
     public Node(NodeComponent Component)
     {
         Selections = new Queue<NodeSelected>();
         Graph.graph.GraphNodes.Add(this);
-        this.CanReachPlayer = false;
+        this.DepthFromPlayer = 0;
         this.Component = Component;
         this.DistanceToPlayer = 0;
         this.Selected = 0;
@@ -90,12 +98,15 @@ public class Node
             }
             Selections.Push(node);
         }
-        Debug.Log("INCORRECT");
     }
 
     public void DeselectExpired()
     {
-        int count = Selections.Size();
+        if(Selections.IsEmpty())
+        {
+            return;
+        }
+        int count = Mathf.Max(Selections.Size() / 10, 1);
         for(int i = 0; i < count; i++)
         {
             NodeSelected node = Selections.Pop();
@@ -105,7 +116,6 @@ public class Node
             }
             else
             {
-                Debug.Log("Expired");
                 Selected--;
             }
         }

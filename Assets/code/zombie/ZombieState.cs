@@ -14,7 +14,7 @@ public class ZombieState
     {
         this.prev = null;
         this.distance = distance;
-        this.g = distance + node.Selected * 1000;
+        this.g = distance + node.Selected * 10;
         this.node = node;
         this.f = this.g + node.DistanceToPlayer;
     }
@@ -23,7 +23,7 @@ public class ZombieState
     {
         this.prev = prev;
         this.distance = prev.distance + connection.distance;
-        this.g = prev.g + connection.distance + connection.node.Selected * 1000;
+        this.g = prev.g + connection.distance + connection.node.Selected * 10;
         this.node = connection.node;
         this.f = this.g + node.DistanceToPlayer;
     }
