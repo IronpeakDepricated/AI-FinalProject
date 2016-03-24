@@ -4,30 +4,65 @@ using System.Collections.Generic;
 [System.Serializable]
 public class Node
 {
+    [System.Serializable]
+    public class NodeSelected
+    {
+        float timeselected;
+        float duration;
+
+        public NodeSelected(float currenttime, float duration)
+        {
+            this.timeselected = currenttime;
+            this.duration = duration;
+        }
+
+        public bool Expired(float currenttime)
+        {
+            return currenttime >= timeselected + duration;
+        }
+    }
 
     public int ID;
     public bool CanReachPlayer;
+    public float DistanceToPlayer;
     public List<NodeConnection> adjNodes = new List<NodeConnection>();
     public int Selected;
     public int subIndex;
     public NodeComponent Component;
+    public Queue<NodeSelected> Selections;
 
     public Node(NodeComponent Component)
     {
+        Selections = new Queue<NodeSelected>();
         Graph.graph.GraphNodes.Add(this);
         this.CanReachPlayer = false;
         this.Component = Component;
+        this.DistanceToPlayer = 0;
         this.Selected = 0;
         this.ID = 0;
     }
 
-    public Node(Node node)
+    public void Select(float duration)
     {
-        this.CanReachPlayer = node.CanReachPlayer;
-        this.Component = node.Component;
-        this.Selected = node.Selected;
-        this.ID = node.ID;
-        this.subIndex = node.subIndex;
+        Selections.Push(new NodeSelected(Time.timeSinceLevelLoad, duration));
+        Selected++;
+    }
+
+    public void DeselectExpired()
+    {
+        int count = Selections.Size();
+        for(int i = 0; i < count; i++)
+        {
+            NodeSelected node = Selections.Pop();
+            if(node.Expired(Time.timeSinceLevelLoad) == false)
+            {
+                Selections.Push(node);
+            }
+            else
+            {
+                Selected--;
+            }
+        }
     }
 
     public void FindAdjNodes(List<Node> nodes)
@@ -61,7 +96,7 @@ public class Node
         return true;
     }
 
-    public bool isInAdjList(Node n) {
+    public bool IsInAdjList(Node n) {
         foreach (NodeConnection nc in adjNodes) {
             if (nc.node.Equals(n)) {
                 return true;

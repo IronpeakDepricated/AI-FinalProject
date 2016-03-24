@@ -15,12 +15,14 @@ public class GraphComponent : MonoBehaviour
     {
         Graph.SetNodeIDs();
         Graph.GenerateGraph();
+        Graph.SetDistanceToPlayer();
         Graph.SetPlayerReachableNodes();
         Graph.GenerateSubGraphs(Player.player);
     }
 
     void Update()
     {
+        Graph.SetDistanceToPlayer();
         Graph.SetPlayerReachableNodes();
         Graph.GenerateSubGraphs(Player.player);
     }

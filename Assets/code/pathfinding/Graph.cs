@@ -45,6 +45,14 @@ public class Graph : IGraph
         }
     }
 
+    public void SetDistanceToPlayer()
+    {
+        for(int i = 0; i < GraphNodes.Count; i++)
+        {
+            GraphNodes[i].DistanceToPlayer = Vector3.Distance(GraphNodes[i].Component.transform.position, Player.player.transform.position);
+        }
+    }
+
     public void GenerateSubGraphs(Player player)
     {
         CreateTriggers(player);
@@ -193,7 +201,7 @@ public class Graph : IGraph
                 dist = float.MaxValue;
                 int best = -1;
                 for (int i = 0; i < potential.Count; i++) {
-                    if (!champion.isInAdjList(potential[i]))
+                    if (!champion.IsInAdjList(potential[i]))
                     {
                         if (dist > potentialdist[i])
                         {
