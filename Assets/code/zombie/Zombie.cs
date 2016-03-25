@@ -19,7 +19,8 @@ public class Zombie : MonoBehaviour, IPathCallback
         // If the zombie can reach the player it will move towards it
         if(Node.CanReach(transform.position, Player.player.transform.position, LayerMasks.CanNodeReachPlayer))
         {
-            MoveTowards(Player.player.transform.position, FrenzyMovementSpeed);
+            Vector3 direction = Player.player.transform.position - transform.position;
+            MoveTowards(Player.player.transform.position - direction.normalized, FrenzyMovementSpeed);
             return;
         }
 
@@ -40,6 +41,7 @@ public class Zombie : MonoBehaviour, IPathCallback
 
     bool MoveTowards(Vector3 destination, float speed)
     {
+        transform.LookAt(destination);
         transform.position = Vector3.MoveTowards(transform.position, destination, Time.deltaTime * speed);
         return transform.position == destination;
     }
