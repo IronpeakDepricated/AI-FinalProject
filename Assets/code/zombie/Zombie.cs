@@ -132,7 +132,7 @@ public class Zombie : MonoBehaviour, IPathCallback
         {
             if(Path.Nodes[i].DepthFromPlayer < 2)
             {
-                Path.Nodes[i].Select(this, Path.Nodes[i].DistanceToPlayer / MovementSpeed);
+                Path.Nodes[i].Select(this, Mathf.Max(Path.Nodes[i].DistanceToPlayer / MovementSpeed, 5));
             }
         }
     }
