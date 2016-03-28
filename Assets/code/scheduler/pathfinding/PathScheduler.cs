@@ -35,7 +35,7 @@ public class PathScheduler : MonoBehaviour
             long current = System.DateTime.Now.Ticks / System.TimeSpan.TicksPerMillisecond;
             if(current > (start + millis))
             {
-                Debug.Log("Requests executed: " + i);
+                //Debug.Log("Requests executed: " + i);
                 return;
             }
         }
@@ -57,5 +57,19 @@ public class PathScheduler : MonoBehaviour
     public void AddToPathScheduler(IPathCallback callback)
     {
         ExecuteRequest(callback);
+    }
+
+    public void RemoveFromScheduler(IPathCallback callback)
+    {
+        int size = requests.Size();
+        for(int i = 0; i < size; i++)
+        {
+            IPathCallback request = requests.Pop();
+            if(request == callback)
+            {
+                return;
+            }
+            requests.Push(request);
+        }
     }
 }

@@ -1,11 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using System;
 
-public class Zombie : MonoBehaviour, IPathCallback
+public class Zombie : MonoBehaviour, IPathCallback, IHealth
 {
 
     public Path Path;
-
+    public bool Alive = true;
     public float MovementSpeed;
     public float FrenzyMovementSpeed;
 
@@ -16,11 +17,16 @@ public class Zombie : MonoBehaviour, IPathCallback
 
     void Update()
     {
-        // If the zombie can reach the player it will move towards it
-        if(Node.CanReach(transform.position, Player.player.transform.position, LayerMasks.CanNodeReachPlayer))
+        if(Alive == false)
         {
+            return;
+        }
+        // If the zombie can reach the player it will move towards it
+        if(Node.CanReach(transform.position + Vector3.up, Player.player.transform.position + Vector3.up, LayerMasks.CanNodeReachPlayer))
+        {
+            transform.LookAt(Player.player.transform.position);
             Vector3 direction = Player.player.transform.position - transform.position;
-            MoveTowards(Player.player.transform.position - direction.normalized, FrenzyMovementSpeed);
+            MoveTowards(Player.player.transform.position - direction.normalized * 1.5f, FrenzyMovementSpeed);
             return;
         }
 
@@ -32,6 +38,7 @@ public class Zombie : MonoBehaviour, IPathCallback
     {
         if(path != null && pathindex < path.Nodes.Count)
         {
+            transform.LookAt(path.Nodes[pathindex].Component.transform.position);
             if(MoveTowards(path.Nodes[pathindex].Component.transform.position, MovementSpeed))
             {
                 pathindex++;
@@ -39,9 +46,15 @@ public class Zombie : MonoBehaviour, IPathCallback
         }
     }
 
+    public float Speed
+    {
+        get;
+        private set;
+    }
     bool MoveTowards(Vector3 destination, float speed)
     {
-        transform.LookAt(destination);
+        destination.y = 0;
+        this.Speed = speed;
         transform.position = Vector3.MoveTowards(transform.position, destination, Time.deltaTime * speed);
         return transform.position == destination;
     }
@@ -50,6 +63,10 @@ public class Zombie : MonoBehaviour, IPathCallback
     void OnDrawGizmos()
     {
         if(Path == null)
+        {
+            return;
+        }
+        if(Alive == false)
         {
             return;
         }
@@ -154,11 +171,18 @@ public class Zombie : MonoBehaviour, IPathCallback
 
     public bool KeepInPathScheduler()
     {
-        return true;
+        return Alive;
     }
 
     public bool WantsToRecalculatePath()
     {
-        return true;
+        return Alive;
+    }
+
+    public void DealDamage()
+    {
+        PathScheduler.scheduler.RemoveFromScheduler(this);
+        GetComponent<Collider>().enabled = false;
+        Alive = false;
     }
 }

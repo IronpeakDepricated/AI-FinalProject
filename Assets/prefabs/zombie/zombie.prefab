@@ -370,6 +370,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 411928}
   - 95: {fileID: 9590052}
+  - 114: {fileID: 11467308}
   m_Layer: 0
   m_Name: skeleton_grunt_happy
   m_TagString: Untagged
@@ -386,10 +387,10 @@ GameObject:
   m_Component:
   - 4: {fileID: 402450}
   - 114: {fileID: 11445466}
-  - 114: {fileID: 11407364}
+  - 136: {fileID: 13616970}
   m_Layer: 2
   m_Name: zombie
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -775,7 +776,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 159946}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 28, y: 0.5, z: 45}
+  m_LocalPosition: {x: 6, y: 0, z: 45}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 411928}
@@ -826,7 +827,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 158830}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.5, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 442768}
@@ -1294,7 +1295,7 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 186176}
-  m_LocalRotation: {x: 0.73308766, y: -0.28765842, z: -0.6117327, w: -0.07495453}
+  m_LocalRotation: {x: 0.7330877, y: -0.28765845, z: -0.6117328, w: -0.07495454}
   m_LocalPosition: {x: -0.018903987, y: 0.013401, z: -0.058930933}
   m_LocalScale: {x: 0.9999998, y: 0.99999976, z: 0.9999998}
   m_Children: []
@@ -1413,7 +1414,7 @@ Animator:
   m_GameObject: {fileID: 158830}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: 9841ef4e6a4b11448931ab991ff2b295, type: 3}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 7212ce8e1919a5a46a2dfe2648f80e35, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
   m_ApplyRootMotion: 1
@@ -1421,17 +1422,6 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
---- !u!114 &11407364
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 159946}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 29bc76722cb15ed46bac5ef924a1e5d8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &11445466
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1443,8 +1433,34 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0caa8131bf007a74a9e131100d63f316, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Alive: 1
   MovementSpeed: 5
-  FrenzyMovementSpeed: 7.5
+  FrenzyMovementSpeed: 10
+--- !u!114 &11467308
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 158830}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5383ef24528cfa48a3aeb61885f9c62, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  zombie: {fileID: 11445466}
+--- !u!136 &13616970
+CapsuleCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 159946}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.5
+  m_Height: 1.5
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.75, z: 0}
 --- !u!137 &13718560
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 1
